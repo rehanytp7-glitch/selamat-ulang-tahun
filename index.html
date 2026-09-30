@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selamat Ulang Tahun 🎂</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Arial,sans-serif;color:#fff;background:radial-gradient(circle at 50% 70%,#4b176f,#150027 65%,#05000c);display:flex;align-items:center;justify-content:center}
+canvas{position:fixed;inset:0;z-index:0}.stars{position:fixed;inset:0;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:45px 45px;opacity:.18;z-index:1}
+.card{position:relative;z-index:5;width:min(92%,480px);padding:34px 25px;text-align:center;border:1px solid rgba(255,255,255,.25);border-radius:30px;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);box-shadow:0 20px 70px #0008}
+.cake{font-size:65px}.typing{font-size:clamp(28px,8vw,45px);font-weight:800;margin:8px 0 16px;text-shadow:0 0 20px #ff75cf;min-height:55px}
+p{font-size:17px;line-height:1.55}.btn{border:0;border-radius:999px;padding:13px 25px;margin-top:12px;font-size:16px;font-weight:700;cursor:pointer;background:#fff;color:#8a2378;box-shadow:0 5px 25px #ff5bd866}
+.secret{display:none;margin-top:22px;padding:18px;border-radius:18px;background:#ffffff15;border:1px solid #ffffff2b;animation:pop .6s ease}
+.balloon{position:fixed;bottom:-120px;z-index:3;font-size:48px;animation:up linear infinite}
+@keyframes up{to{transform:translateY(-120vh) rotate(12deg)}}@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas><div class="stars"></div>
+<div class="card">
+  <div class="cake">🎂</div>
+  <div class="typing" id="typing"></div>
+  <p>Hari ini adalah hari yang spesial. Semoga harimu dipenuhi kebahagiaan, tawa, dan hal-hal indah. ✨</p>
+  <button class="btn" id="celebrate">🎉 Rayakan!</button>
+  <button class="btn" id="secretBtn">💌 Buka Pesan Rahasia</button>
+  <div class="secret" id="secret">
+    <b>💖 Pesan untukmu</b><br><br>
+    Semoga semua impianmu tercapai, selalu dikelilingi orang-orang yang menyayangimu,
+    dan tahun ini membawa banyak cerita indah. Selamat ulang tahun! 🎈✨
+  </div>
+</div>
+<script>
+const text="Selamat Ulang Tahun! 🎉";let i=0;
+(function type(){if(i<=text.length){document.getElementById("typing").textContent=text.slice(0,i++);setTimeout(type,90)}})();
+
+for(let i=0;i<14;i++){let b=document.createElement("div");b.className="balloon";b.textContent=["🎈","🎈","🎈","💖"][i%4];b.style.left=Math.random()*100+"%";b.style.animationDuration=(7+Math.random()*7)+"s";b.style.animationDelay=(-Math.random()*10)+"s";document.body.appendChild(b)}
+
+const c=document.getElementById("fx"),x=c.getContext("2d");let W,H,parts=[],rockets=[];
+function resize(){W=c.width=innerWidth*devicePixelRatio;H=c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);W=innerWidth;H=innerHeight}resize();addEventListener("resize",resize);
+function boom(X,Y){for(let n=0;n<90;n++){let a=Math.random()*Math.PI*2,s=2+Math.random()*5;parts.push({x:X,y:Y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:70+Math.random()*35});}}
+function fire(){rockets.push({x:Math.random()*W,y:H+10,tx:W*(.15+Math.random()*.7),ty:H*(.12+Math.random()*.45),v:6})}
+function loop(){x.clearRect(0,0,W,H);if(Math.random()<.035)fire();rockets.forEach((r,k)=>{let dx=r.tx-r.x,dy=r.ty-r.y,d=Math.hypot(dx,dy);r.x+=dx/d*r.v;r.y+=dy/d*r.v;x.fillStyle="#fff";x.fillRect(r.x,r.y,2,2);if(d<10){boom(r.x,r.y);rockets.splice(k,1)}});parts.forEach((p,k)=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.035;p.life--;x.globalAlpha=Math.max(p.life/100,0);x.fillStyle="#fff";x.fillRect(p.x,p.y,2.5,2.5);if(p.life<=0)parts.splice(k,1)});x.globalAlpha=1;requestAnimationFrame(loop)}loop();
+
+document.getElementById("celebrate").onclick=()=>{for(let j=0;j<5;j++)setTimeout(fire,j*160);for(let j=0;j<5;j++)setTimeout(()=>boom(W*(.15+.7*Math.random()),H*(.1+.45*Math.random())),j*220)};
+document.getElementById("secretBtn").onclick=()=>{document.getElementById("secret").style.display="block";document.getElementById("secretBtn").style.display="none";for(let j=0;j<3;j++)setTimeout(()=>boom(W/2+(Math.random()-.5)*250,H/2+(Math.random()-.5)*180),j*180)};
+</script>
+</body>
+</html>
